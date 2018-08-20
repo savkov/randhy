@@ -5,8 +5,6 @@ workflows:
     jobs:
       - build_and_test
       - upload_to_pypi:
-          requires:
-            - build_and_test
           filters:
             branches:
               ignore: /^.*/
