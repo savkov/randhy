@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Building packages and uploading them to our Gemfury repository
+# Building packages and uploading them to PyPi
 # You can provide the directories containing packages to build (otherwise all directories are processed)
 
 set -e
