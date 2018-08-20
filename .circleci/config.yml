@@ -52,7 +52,8 @@ jobs:
 
   upload_to_pypi:
     working_directory: ~/randhy
-    machine: true
+    docker:
+      - image: savkov/nlp-python-light:0.1.0
     steps:
       - checkout
       - setup_remote_docker:
