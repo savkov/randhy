@@ -1,7 +1,7 @@
 # randhy
 _Hypothesis thesting with approximate randomisation_
 
-[![CircleCI](https://circleci.com/gh/savkov/randhy.svg?style=svg&circle-token=ff0102ad2d043f5548279e8f48a5fcde2297978b)](https://circleci.com/gh/savkov/randhy)
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/c21544109986302622de/maintainability)](https://codeclimate.com/github/savkov/randhy/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c21544109986302622de/test_coverage)](https://codeclimate.com/github/savkov/randhy/test_coverage)
 
