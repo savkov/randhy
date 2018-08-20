@@ -3,12 +3,10 @@ workflows:
   version: 2
   randhy-flow:
     jobs:
-      - build_and_test:
-          filters:
-            branches:
-              ignore:
-                - master
+      - build_and_test
       - upload_to_pypi:
+          requires:
+            - build_and_test
           filters:
             branches:
               ignore: /^.*/
@@ -69,10 +67,6 @@ jobs:
           command: |
             pip install --user -r test_requirements.txt
             python -c "import spacy; spacy.cli.download('en_core_web_sm')"
-      - run:
-          name: Linting
-          command: |
-            python -m flake8
       - run: pip install wheel twine
       - run: chmod +x build.sh
       - run: ./build.sh .
