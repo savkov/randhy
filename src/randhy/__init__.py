@@ -3,7 +3,6 @@ import random
 __author__ = 'Sasho Savkov'
 __credits__ = ["Sasho Savkov", "William Morgan"]
 __license__ = "MIT"
-__version__ = "2.0.0"
 __email__ = "me@sasho.io"
 __status__ = "Production"
 
