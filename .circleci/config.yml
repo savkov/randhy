@@ -1,0 +1,77 @@
+version: 2
+workflows:
+  version: 2
+  randhy-flow:
+    jobs:
+      - build_and_test:
+          filters:
+            branches:
+              ignore:
+                - master
+      - upload_to_pypi:
+          filters:
+            branches:
+              ignore: /^.*/
+            tags:
+              only: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+
+jobs:
+  build_and_test:
+    working_directory: ~/randhy
+    docker:
+      - image: savkov/nlp-python-light:0.1.0
+    steps:
+      - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
+      - run: echo "$CIRCLE_SHA1" > .commit-id
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Install requirements
+          command: |
+            pip install --user -r test_requirements.txt
+            python -c "import spacy; spacy.cli.download('en_core_web_sm')"
+      - run:
+          name: Downloading IMDb docs
+          command: |
+            python -c "import thinc.extra.datasets; thinc.extra.datasets.imdb()"
+      - run:
+          name: Linting
+          command: |
+            python -m flake8
+      - run:
+          name: Testing
+          command: |
+            ./cc-test-reporter before-build
+            PYTHONPATH=~/randhy/src:$PYTHONPATH python -m pytest --cov=. --cov-report xml
+            ./cc-test-reporter after-build --coverage-input-type coverage.py --exit-code $?
+
+  upload_to_babylon_index_server:
+    working_directory: ~/randhy
+    machine: true
+    steps:
+      - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
+      - run: echo "$CIRCLE_SHA1" > .commit-id
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Install requirements
+          command: |
+            pip install --user -r test_requirements.txt
+            python -c "import spacy; spacy.cli.download('en_core_web_sm')"
+      - run:
+          name: Linting
+          command: |
+            python -m flake8
+      - run: pip install wheel twine
+      - run: chmod +x build.sh
+      - run: ./build.sh .
